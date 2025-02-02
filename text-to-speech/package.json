@@ -1,0 +1,24 @@
+{
+  "name": "text-to-speech",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@ai-sdk/openai": "^1.1.9",
+    "ai": "^4.1.21",
+    "dotenv": "^16.4.7",
+    "openai": "^4.82.0",
+    "pg": "^8.13.1",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}

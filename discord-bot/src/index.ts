@@ -7,6 +7,9 @@ import {
   listen,
   here,
   mode,
+  mix,
+  mm,
+  calcmmr,
 } from "./commands/index.ts";
 import {
   findAndJoinJorelVoiceChannel,
@@ -65,6 +68,15 @@ discordClient.on("messageCreate", async (message) => {
       return;
     case "!mode":
       queryMode = await mode(message, queryMode);
+      return;
+    case "!mm":
+      await mm(message);
+      return;
+    case "!mix":
+      await mix(message);
+      return;
+    case "!calcmmr":
+      await calcmmr(message);
       return;
     default:
       message.channel.id === selectedInputChannel?.id &&

@@ -10,6 +10,7 @@ import {
   mix,
   mm,
   calcmmr,
+  mymmr,
 } from "./commands/index.ts";
 import {
   findAndJoinJorelVoiceChannel,
@@ -77,6 +78,9 @@ discordClient.on("messageCreate", async (message) => {
       return;
     case "!calcmmr":
       await calcmmr(message);
+      return;
+    case "!mymmr":
+      await mymmr(message);
       return;
     default:
       message.channel.id === selectedInputChannel?.id &&

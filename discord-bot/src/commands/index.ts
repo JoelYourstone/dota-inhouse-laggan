@@ -8,3 +8,4 @@ export { default as mode } from "./!mode.ts";
 export { default as mix } from "./!mix.ts";
 export { default as mm } from "./!mm.ts";
 export { default as calcmmr } from "./!calcmmr.ts";
+export { default as mymmr } from "./!mymmr.ts";

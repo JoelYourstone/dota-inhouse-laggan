@@ -11,10 +11,6 @@ type Alias = {
   aliases: string[];
 };
 
-const winRates = JSON.parse(
-  fs.readFileSync("../winrates.json", "utf-8")
-) as WinRate[];
-
 // const aliasData: Alias[] = JSON.parse(
 //   fs.readFileSync("../allias.json", "utf-8")
 // ) as Alias[];
@@ -36,10 +32,14 @@ export default async function mm(message: Message) {
   if (team1.length === 0 && team2.length === 0) {
     return;
   }
+
+  // Team 1 and 2 should be either radiant or dire, randomize it
+  const team1Radiant = Math.random() < 0.5;
+
   message.reply(
-    `Team 1: ${team1.join(", ")} (avg: ${team1AvgElo.toFixed(
-      0
-    )} mmr)\nTeam 2: ${team2.join(", ")} (avg: ${team2AvgElo.toFixed(0)} mmr)`
+    `Radiant : ${team1Radiant ? team1.join(", ") : team2.join(", ")} \nDire: ${
+      team1Radiant ? team2.join(", ") : team1.join(", ")
+    }`
   );
 }
 
@@ -48,6 +48,9 @@ function matchmake(
   message: Message,
   aliasData: Alias[]
 ): [string[], string[], number, number] {
+  const winRates = JSON.parse(
+    fs.readFileSync("../winrates.json", "utf-8")
+  ) as WinRate[];
   // Assume players array contains 10 player aliases
 
   const players: { alias: string; playerId: string; elo: number }[] = [];
@@ -66,6 +69,12 @@ function matchmake(
 
   // Example usage:
   const all5Stacks = getCombinationsOf5(players);
+
+  if (!all5Stacks) {
+    message.reply("Not enough players to matchmake");
+    return [[], [], 0, 0];
+  }
+
   const all5StacksWithElo = all5Stacks.map((stack) => {
     const elo = stack.reduce((acc, player) => acc + player.elo, 0);
     return { stack, elo };
@@ -140,9 +149,9 @@ function stupidMatchMake(
  * @returns An array of combinations, where each combination is an array of 5 numbers.
  *          The total number of combinations is C(10,5) = 252.
  */
-function getCombinationsOf5(arr: Player[]): Player[][] {
+function getCombinationsOf5(arr: Player[]): Player[][] | null {
   if (arr.length !== 10) {
-    throw new Error("Input must be an array of exactly 10 unique numbers.");
+    return null;
   }
 
   const results: Player[][] = [];

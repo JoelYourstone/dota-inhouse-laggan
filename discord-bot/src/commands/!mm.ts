@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import fs from "fs";
+import { Ohbehave } from "./!toxicass";
 
 type WinRate = {
   username: string;
@@ -53,6 +54,10 @@ function matchmake(
   ) as WinRate[];
   // Assume players array contains 10 player aliases
 
+  const ohbehave = JSON.parse(
+    fs.readFileSync("../ohbehave.json", "utf-8")
+  ) as Ohbehave;
+
   const players: { alias: string; playerId: string; elo: number }[] = [];
   for (const alias of playerAliases) {
     const playerId = aliasData.find((a) => a.aliases.includes(alias))?.id;
@@ -64,7 +69,15 @@ function matchmake(
     const winRatePlayerObject = winRates.find(
       (wr) => wr.username === playerId
     )!;
-    players.push({ alias, playerId, elo: winRatePlayerObject.elo });
+
+    // ENABLE THIS TO USE TOXICASS
+    const toxicCount = 0; // ohbehave[playerId]?.length || 0;
+
+    players.push({
+      alias,
+      playerId,
+      elo: winRatePlayerObject.elo - toxicCount,
+    });
   }
 
   // Example usage:

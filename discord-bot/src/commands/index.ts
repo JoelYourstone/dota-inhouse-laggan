@@ -10,3 +10,5 @@ export { default as mm } from "./!mm.ts";
 export { default as calcmmr } from "./!calcmmr.ts";
 export { default as mymmr } from "./!mymmr.ts";
 export { default as toxicass } from "./!toxicass.ts";
+export { default as mmhelp } from "./!mmhelp.ts";
+export { default as hacker } from "./!hacker.ts";

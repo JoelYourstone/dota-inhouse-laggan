@@ -6,6 +6,21 @@ type WinRate = {
   elo: number;
 };
 
+type DiscordId = string;
+
+type Ohbehave = {
+  [key: DiscordId]: {
+    awardedBy: DiscordId;
+    reason: string;
+    timestamp: number;
+  }[];
+};
+
+type Alias = {
+  id: string;
+  aliases: string[];
+};
+
 export default async function mymmr(message: Message) {
   const userId = message.author.id;
   const winRates = JSON.parse(
@@ -19,5 +34,11 @@ export default async function mymmr(message: Message) {
     return;
   }
 
-  message.reply(`Your MMR is ${playerElo.toFixed(0)}`);
+  const ohbehave = JSON.parse(
+    fs.readFileSync("../ohbehave.json", "utf-8")
+  ) as Ohbehave;
+
+  const toxicCount = ohbehave[userId]?.length || 0;
+
+  message.reply(`Your MMR is ${(playerElo - toxicCount).toFixed(0)}`);
 }

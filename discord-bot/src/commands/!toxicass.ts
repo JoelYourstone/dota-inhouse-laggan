@@ -3,7 +3,7 @@ import fs from "fs";
 
 type DiscordId = string;
 
-export type Ohbehave = {
+type Ohbehave = {
   [key: DiscordId]: {
     awardedBy: DiscordId;
     reason: string;

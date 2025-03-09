@@ -1,10 +1,19 @@
 import { Message } from "discord.js";
 import fs from "fs";
-import { Ohbehave } from "./!toxicass";
 
 type WinRate = {
   username: string;
   elo: number;
+};
+
+type DiscordId = string;
+
+type Ohbehave = {
+  [key: DiscordId]: {
+    awardedBy: DiscordId;
+    reason: string;
+    timestamp: number;
+  }[];
 };
 
 type Alias = {

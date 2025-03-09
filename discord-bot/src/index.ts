@@ -1,4 +1,11 @@
-import { Client, GatewayIntentBits, type TextBasedChannel } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  type TextBasedChannel,
+  type Message,
+  TextChannel,
+  ThreadChannel,
+} from "discord.js";
 import {
   play,
   leave,
@@ -12,6 +19,8 @@ import {
   calcmmr,
   mymmr,
   toxicass,
+  mmhelp,
+  hacker,
 } from "./commands/index.ts";
 import {
   findAndJoinJorelVoiceChannel,
@@ -41,6 +50,8 @@ discordClient.on("ready", (client) => {
 let selectedInputChannel: TextBasedChannel | undefined;
 let queryMode: "embed" | "keyword" = "keyword";
 
+let lastMessage: Message | undefined;
+
 discordClient.on("messageCreate", async (message) => {
   if (guildIdPromise.state === "pending") {
     setGuildId(message.guild!.id);
@@ -49,50 +60,87 @@ discordClient.on("messageCreate", async (message) => {
 
   const command = message.content?.trim()?.split(" ")[0];
 
+  let commandFound = true;
   switch (command) {
     case "!play":
       await play(message, botConfig, queryMode);
-      return;
+      break;
     case "!leave":
       await leave(message);
-      return;
+      break;
     case "!list":
       await list(message);
-      return;
+      break;
     case botConfig.joinCommand: // !join or !join2
       await join(message);
-      return;
+      break;
     case "!listen":
       await listen(message);
-      return;
+      break;
     case "!here":
       selectedInputChannel = await here(message, selectedInputChannel);
-      return;
+      break;
     case "!mode":
       queryMode = await mode(message, queryMode);
-      return;
+      break;
     case "!mm":
       await mm(message);
-      return;
+      break;
     case "!mix":
       await mix(message);
-      return;
+      break;
     case "!calcmmr":
       await calcmmr(message);
-      return;
+      break;
     case "!mymmr":
       await mymmr(message);
-      return;
+      break;
     case "!toxicass":
       await toxicass(message);
-      return;
+      break;
+    case "!mmhelp":
+      await mmhelp(message);
+      break;
+    case "!hacker":
+      await hacker(message);
+      break;
     default:
+      commandFound = false;
       message.channel.id === selectedInputChannel?.id &&
         (await play(message, botConfig, queryMode, false));
   }
+
+  if (commandFound) {
+    lastMessage = message;
+  }
 });
 
-const guildId = await guildIdPromise;
-console.log("guildId", guildId);
-startGameStateServer(botConfig, guildId);
-console.log("Game state server started");
+console.log(123);
+// const guildId = await guildIdPromise;
+// console.log("guildId", guildId);
+// startGameStateServer(botConfig, guildId);
+// console.log("Game state server started");
+
+// // Read stdin
+process.stdin.on("data", (data) => {
+  if (lastMessage) {
+    console.log("lastMessage", lastMessage);
+    const channel = lastMessage.channel;
+    let respondWith = data
+      .toString()
+      .replace("!p", `<@${lastMessage.author.id}>`);
+
+    const client = lastMessage.client;
+
+    client.users.cache.get("395189309688512512")?.send("???");
+
+    if (channel.isSendable() && respondWith.length > 0) {
+      console.log("Sending message to channel", channel.id);
+      channel.send(respondWith);
+    } else {
+      console.log("Channel is not a TextChannel", channel);
+    }
+  } else {
+    console.log("No last message");
+  }
+});
